@@ -30,8 +30,13 @@ dependencies {
 	// Add Lombok dependencies
 	compileOnly 'org.projectlombok:lombok:1.18.30'
 	annotationProcessor 'org.projectlombok:lombok:1.18.30'
-}
 
+	// Update this to compileOnly instead of providedCompile
+	compileOnly 'javax.servlet:javax.servlet-api:4.0.1'
+
+	implementation 'org.postgresql:postgresql:42.3.3'
+
+}
 
 tasks.named('test') {
 	useJUnitPlatform()

@@ -9,16 +9,25 @@
 <body>
 <div class="container">
     <h1>Admin Login</h1>
-    <form id="loginForm">
-        <label for="username">Username:</label>
-        <input type="text" id="username" placeholder="Enter Username" required>
-
-        <label for="password">Password:</label>
-        <input type="password" id="password" placeholder="Enter Password" required>
-
-        <button type="submit">Login</button>
+    <!-- The form should submit to /login (this is where Spring Security expects the login request to go) -->
+    <form action="/login" method="post">
+        <div>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" placeholder="Enter Username" required>
+        </div>
+        <div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" placeholder="Enter Password" required>
+        </div>
+        <div>
+            <button type="submit">Login</button>
+        </div>
     </form>
-    <p id="errorMessage" class="error"></p>
+
+    <!-- Display error message if login fails -->
+    <p id="errorMessage" class="error">
+        <!-- This error message can be populated by Spring Security's default authentication failure handler -->
+    </p>
 </div>
 
 <script src="scripts/login.js"></script>

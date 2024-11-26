@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Income Tracker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+        input, button {
+            margin: 10px 0;
+            padding: 10px;
+            width: 100%;
+        }
+        .results {
+            margin-top: 20px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+<h1>Driver Income Tracker</h1>
+<form id="incomeForm">
+    <input type="text" id="name" placeholder="Driver Name" required>
+    <input type="date" id="date" required>
+    <input type="number" id="dailyIncome" placeholder="Daily Income" required>
+    <button type="submit">Calculate & Save</button>
+</form>
+<div class="results">
+    <p>Income After VAT: <span id="afterVAT">-</span></p>
+    <p>Driver Profit: <span id="driverProfit">-</span></p>
+</div>
+<button id="generateReport">Generate Monthly Report</button>
+</body>
+<script src="scripts/income.js"></script>
+</html>

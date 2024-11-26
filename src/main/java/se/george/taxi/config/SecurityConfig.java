@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,21 +18,28 @@ public class SecurityConfig {
         http
                 .csrf().disable()
                 .authorizeRequests()
-                .anyRequest().authenticated()  // Require authentication for all requests
+                .requestMatchers("/income.html").authenticated()  // Protect the income page
+                .anyRequest().permitAll()  // Allow other pages (like login.html) to be accessed without authentication
                 .and()
-                .httpBasic();  // Enable basic authentication
+                .formLogin()
+                .loginPage("/login.html")  // Custom login page
+                .loginProcessingUrl("/login")  // URL to process the form submission
+                .defaultSuccessUrl("/income.html", true)  // Redirect to income.html after successful login
+                .permitAll()  // Allow anyone to access the login page
+                .and()
+                .httpBasic();  // You can still allow basic authentication for APIs
         return http.build();
     }
 
     @Bean
     public UserDetailsService userDetailsService(PasswordEncoder passwordEncoder) {
-        // Define an in-memory user with username "Admin" and password "123456"
-        UserDetails admin = User.builder()
-                .username("Admin")  // Username
-                .password(passwordEncoder.encode("123456"))  // Password (encoded)
-                .roles("ADMIN")  // Role for the user
+        // Define an in-memory user with username "user" and password "123456"
+        var user = User.builder()
+                .username("user")  // Username is now "user"
+                .password(passwordEncoder.encode("123456"))  // Password is encoded
+                .roles("USER")  // Optional: You can define roles if needed
                 .build();
-        return new InMemoryUserDetailsManager(admin);  // Return user details manager with this user
+        return new InMemoryUserDetailsManager(user);  // Return user details manager with this user
     }
 
     @Bean
