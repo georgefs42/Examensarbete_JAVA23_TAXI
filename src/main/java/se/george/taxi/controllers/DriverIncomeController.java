@@ -1,31 +1,50 @@
 package se.george.taxi.controllers;
 
+import org.springframework.web.bind.annotation.*;
 import se.george.taxi.models.DriverIncome;
 import se.george.taxi.services.DriverIncomeService;
-import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/income")  // Root path for all endpoints in this controller
-@CrossOrigin(origins = "http://localhost:8080") // To allow frontend to make requests
+@RequestMapping("/driver-income")
+@CrossOrigin(origins = "http://localhost:5174")
 public class DriverIncomeController {
 
-    private final DriverIncomeService service;
+    private final DriverIncomeService driverIncomeService;
 
     // Constructor injection for the service
-    public DriverIncomeController(DriverIncomeService service) {
-        this.service = service;
+    public DriverIncomeController(DriverIncomeService driverIncomeService) {
+        this.driverIncomeService = driverIncomeService;
     }
 
-    @PostMapping  // Handles POST requests
+    // Get all driver incomes
+    @GetMapping
+    public List<DriverIncome> getAllIncomes() {
+        return driverIncomeService.getAllIncomes();
+    }
+
+    // Create new income
+    @PostMapping
     public DriverIncome addIncome(@RequestBody DriverIncome income) {
-        return service.saveIncome(income);
+        return driverIncomeService.saveIncome(income);
     }
 
-    @GetMapping("/monthly")  // Handles GET requests with query parameters
+    // Get monthly income data
+    @GetMapping("/monthly")
     public List<DriverIncome> getMonthlyData(@RequestParam int year, @RequestParam int month) {
-        return service.getMonthlyData(year, month);
+        return driverIncomeService.getMonthlyData(year, month);
+    }
+
+    // Update an existing income
+    @PutMapping("/{id}")
+    public DriverIncome updateIncome(@PathVariable Long id, @RequestBody DriverIncome updatedIncome) {
+        return driverIncomeService.updateIncome(id, updatedIncome);
+    }
+
+    // Delete income
+    @DeleteMapping("/{id}")
+    public void deleteIncome(@PathVariable Long id) {
+        driverIncomeService.deleteIncome(id);
     }
 }

@@ -1,28 +1,36 @@
 package se.george.taxi.models;
 
 import jakarta.persistence.*;
+
 import java.time.LocalDate;
 
 @Entity
 public class DriverIncome {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private LocalDate date;
-    private String name;
     private double dailyIncome;
 
-    @Column(name = "daily_income_aftervat", nullable = false)
+    @Column(name = "daily_income_after_vat", nullable = false)
     private double dailyIncomeAfterVAT;
+
+    @ManyToOne
+    @JoinColumn(name = "driver_id", nullable = false)
+    private Driver driver;
+
+    @Column(name = "driver_daily_profit")
+    private double driverDailyProfit; // New field for daily profit
 
     // Constructors
     public DriverIncome() {}
 
-    public DriverIncome(LocalDate date, String name, double dailyIncome) {
+    public DriverIncome(LocalDate date, double dailyIncome, Driver driver) {
         this.date = date;
-        this.name = name;
         this.dailyIncome = dailyIncome;
+        this.driver = driver;
     }
 
     // Getters and Setters
@@ -42,14 +50,6 @@ public class DriverIncome {
         this.date = date;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public double getDailyIncome() {
         return dailyIncome;
     }
@@ -64,15 +64,38 @@ public class DriverIncome {
 
     public void setDailyIncomeAfterVAT(double dailyIncomeAfterVAT) {
         this.dailyIncomeAfterVAT = dailyIncomeAfterVAT;
+        // Calculate the driver's daily profit
+        calculateDriverDailyProfit();
     }
 
-    // Calculate the value of dailyIncomeAfterVAT (e.g., 6% VAT deduction)
+    public double getDriverDailyProfit() {
+        return driverDailyProfit;
+    }
+
+    public void setDriverDailyProfit(double driverDailyProfit) {
+        this.driverDailyProfit = driverDailyProfit;
+    }
+
+    public Driver getDriver() {
+        return driver;
+    }
+
+    public void setDriver(Driver driver) {
+        this.driver = driver;
+    }
+
+    // Method to calculate the driver's daily profit (45% of dailyIncomeAfterVAT)
+    private void calculateDriverDailyProfit() {
+        this.driverDailyProfit = this.dailyIncomeAfterVAT * 0.45; // 45% of dailyIncomeAfterVAT
+    }
+
     @PrePersist
-    public void calculateDailyIncomeAfterVAT() {
+    @PreUpdate
+    public void calculateDailyIncomeAfterVATAndProfit() {
+        // Calculate VAT (6%) deduction from dailyIncome
         this.dailyIncomeAfterVAT = this.dailyIncome - (this.dailyIncome * 0.06);
-    }
 
-    public double calculateDailyDriverProfit() {
-        return dailyIncomeAfterVAT * 0.45;
+        // Calculate the driver's daily profit
+        calculateDriverDailyProfit();
     }
 }

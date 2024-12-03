@@ -3,11 +3,10 @@ package se.george.taxi.models;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "drivers")
 public class Driver {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long driverId;
+    private Long driverId;  // Primary key
 
     private String name;
     private String personalNumber;
@@ -22,7 +21,6 @@ public class Driver {
     public Driver() {}
 
     // Getters and Setters
-
     public Long getDriverId() {
         return driverId;
     }
