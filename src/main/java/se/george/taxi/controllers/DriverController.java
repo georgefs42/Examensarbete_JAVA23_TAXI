@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/drivers")
-@CrossOrigin(origins = "http://localhost:5174")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DriverController {
 
     private final DriverService driverService;
