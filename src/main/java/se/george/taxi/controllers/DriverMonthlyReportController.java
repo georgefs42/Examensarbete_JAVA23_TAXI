@@ -4,9 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import se.george.taxi.dto.DriverMonthlyRapportDTO;
-import se.george.taxi.models.DriverMonthlyRapport;
-import se.george.taxi.services.DriverMonthlyRapportService;
+import se.george.taxi.dto.DriverMonthlyReportDTO;
+import se.george.taxi.models.DriverMonthlyReport;
+import se.george.taxi.services.DriverMonthlyReportService;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -15,22 +15,22 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/monthly-rapport")
-public class DriverMonthlyRapportController {
+public class DriverMonthlyReportController {
 
     @Autowired
-    private DriverMonthlyRapportService service;
+    private DriverMonthlyReportService service;
 
     /**
      * Get all monthly rapports.
      * @return List of DriverMonthlyRapportDTO
      */
     @GetMapping
-    public ResponseEntity<List<DriverMonthlyRapportDTO>> getAllRapports() {
-        List<DriverMonthlyRapport> rapports = service.getAllRapports();
+    public ResponseEntity<List<DriverMonthlyReportDTO>> getAllRapports() {
+        List<DriverMonthlyReport> rapports = service.getAllRapports();
         if (rapports.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-        List<DriverMonthlyRapportDTO> rapportDTOs = rapports.stream()
+        List<DriverMonthlyReportDTO> rapportDTOs = rapports.stream()
                 .map(this::convertToDTO)
                 .collect(Collectors.toList());
         return new ResponseEntity<>(rapportDTOs, HttpStatus.OK);
@@ -42,8 +42,8 @@ public class DriverMonthlyRapportController {
      * @return DriverMonthlyRapportDTO
      */
     @GetMapping("/{driverId}")
-    public ResponseEntity<DriverMonthlyRapportDTO> getRapportById(@PathVariable Long driverId) {
-        Optional<DriverMonthlyRapport> rapport = service.getRapportById(driverId);
+    public ResponseEntity<DriverMonthlyReportDTO> getRapportById(@PathVariable Long driverId) {
+        Optional<DriverMonthlyReport> rapport = service.getRapportById(driverId);
         if (rapport.isPresent()) {
             return new ResponseEntity<>(convertToDTO(rapport.get()), HttpStatus.OK);
         }
@@ -56,9 +56,9 @@ public class DriverMonthlyRapportController {
      * @return Created DriverMonthlyRapportDTO.
      */
     @PostMapping
-    public ResponseEntity<DriverMonthlyRapportDTO> createRapport(@RequestBody DriverMonthlyRapportDTO request) {
+    public ResponseEntity<DriverMonthlyReportDTO> createRapport(@RequestBody DriverMonthlyReportDTO request) {
         try {
-            DriverMonthlyRapport rapport = service.createRapport(
+            DriverMonthlyReport rapport = service.createRapport(
                     request.getDriverId(),
                     request.getPeriodFrom(),
                     request.getPeriodTo()
@@ -77,13 +77,13 @@ public class DriverMonthlyRapportController {
      * @return Updated DriverMonthlyRapportDTO.
      */
     @PutMapping("/{driverId}")
-    public ResponseEntity<DriverMonthlyRapportDTO> updateRapport(
+    public ResponseEntity<DriverMonthlyReportDTO> updateRapport(
             @PathVariable Long driverId,
             @RequestParam LocalDate periodFrom,
             @RequestParam LocalDate periodTo) {
 
         try {
-            DriverMonthlyRapport updatedRapport = service.updateRapport(driverId, periodFrom, periodTo);
+            DriverMonthlyReport updatedRapport = service.updateRapport(driverId, periodFrom, periodTo);
             return new ResponseEntity<>(convertToDTO(updatedRapport), HttpStatus.OK);
         } catch (RuntimeException e) {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND); // If the rapport is not found
@@ -110,8 +110,8 @@ public class DriverMonthlyRapportController {
      * @param rapport DriverMonthlyRapport object.
      * @return DriverMonthlyRapportDTO
      */
-    private DriverMonthlyRapportDTO convertToDTO(DriverMonthlyRapport rapport) {
-        return DriverMonthlyRapportDTO.builder()
+    private DriverMonthlyReportDTO convertToDTO(DriverMonthlyReport rapport) {
+        return DriverMonthlyReportDTO.builder()
                 .driverId(rapport.getDriverId())
                 .name(rapport.getName())
                 .personalNumber(rapport.getPersonalNumber())

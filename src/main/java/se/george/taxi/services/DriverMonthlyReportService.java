@@ -3,9 +3,9 @@ package se.george.taxi.services;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import se.george.taxi.models.Driver;
-import se.george.taxi.models.DriverMonthlyRapport;
+import se.george.taxi.models.DriverMonthlyReport;
 import se.george.taxi.repositories.DriverIncomeRepository;
-import se.george.taxi.repositories.DriverMonthlyRapportRepository;
+import se.george.taxi.repositories.DriverMonthlyReportRepository;
 import se.george.taxi.repositories.DriverRepository;
 
 import java.math.BigDecimal;  // Add missing import for BigDecimal
@@ -14,10 +14,10 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class DriverMonthlyRapportService {
+public class DriverMonthlyReportService {
 
     @Autowired
-    private DriverMonthlyRapportRepository repository;
+    private DriverMonthlyReportRepository repository;
 
     @Autowired
     private DriverRepository driverRepository;
@@ -26,15 +26,15 @@ public class DriverMonthlyRapportService {
     private DriverIncomeRepository driverIncomeRepository;
 
     // Get all rapports
-    public List<DriverMonthlyRapport> getAllRapports() {
+    public List<DriverMonthlyReport> getAllRapports() {
         return repository.findAll();  // This will get all rapports from the database
     }
 
-    public Optional<DriverMonthlyRapport> getRapportById(Long driverId) {
+    public Optional<DriverMonthlyReport> getRapportById(Long driverId) {
         return repository.findById(driverId);
     }
 
-    public DriverMonthlyRapport createRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
+    public DriverMonthlyReport createRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
         // Fetch driver details from the 'driver' table
         Driver driver = driverRepository.findById(driverId)
                 .orElseThrow(() -> new IllegalArgumentException("Driver not found for ID: " + driverId));
@@ -46,7 +46,7 @@ public class DriverMonthlyRapportService {
         BigDecimal totalProfitBigDecimal = BigDecimal.valueOf(totalProfit);
 
         // Create a new DriverMonthlyRapport entity
-        DriverMonthlyRapport rapport = new DriverMonthlyRapport();
+        DriverMonthlyReport rapport = new DriverMonthlyReport();
         rapport.setDriverId(driverId);
         rapport.setName(driver.getName());
         rapport.setPersonalNumber(driver.getPersonalNumber());
@@ -58,11 +58,11 @@ public class DriverMonthlyRapportService {
         return repository.save(rapport);
     }
 
-    public DriverMonthlyRapport updateRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
+    public DriverMonthlyReport updateRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
         // Fetch the rapport and update it
-        Optional<DriverMonthlyRapport> existingRapport = repository.findById(driverId);
+        Optional<DriverMonthlyReport> existingRapport = repository.findById(driverId);
         if (existingRapport.isPresent()) {
-            DriverMonthlyRapport rapport = existingRapport.get();
+            DriverMonthlyReport rapport = existingRapport.get();
             Double totalProfit = driverIncomeRepository.calculateTotalProfit(driverId, periodFrom, periodTo);
 
             // Convert totalProfit (Double) to BigDecimal before updating

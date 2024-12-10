@@ -18,7 +18,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DriverMonthlyRapportDTO {
+public class DriverMonthlyReportDTO {
 
     @NotNull(message = "Driver ID cannot be null")
     private Long driverId;

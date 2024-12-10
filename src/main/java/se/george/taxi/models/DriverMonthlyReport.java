@@ -6,7 +6,7 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "driver_monthly_rapport")
-public class DriverMonthlyRapport {
+public class DriverMonthlyReport {
 
     @Id
     @Column(name = "driver_id", nullable = false)
@@ -28,10 +28,10 @@ public class DriverMonthlyRapport {
     private LocalDate periodTo;
 
     // Constructors
-    public DriverMonthlyRapport() {
+    public DriverMonthlyReport () {
     }
 
-    public DriverMonthlyRapport(Long driverId, String name, String personalNumber, BigDecimal totalProfit, LocalDate periodFrom, LocalDate periodTo) {
+    public DriverMonthlyReport (Long driverId, String name, String personalNumber, BigDecimal totalProfit, LocalDate periodFrom, LocalDate periodTo) {
         this.driverId = driverId;
         this.name = name;
         this.personalNumber = personalNumber;
