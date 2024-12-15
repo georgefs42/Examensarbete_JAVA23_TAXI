@@ -15,15 +15,13 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/monthly-rapport")
+@CrossOrigin(origins = "http://localhost:5173")
 public class DriverMonthlyReportController {
 
     @Autowired
     private DriverMonthlyReportService service;
 
-    /**
-     * Get all monthly rapports.
-     * @return List of DriverMonthlyRapportDTO
-     */
+    // Get all monthly rapports
     @GetMapping
     public ResponseEntity<List<DriverMonthlyReportDTO>> getAllRapports() {
         List<DriverMonthlyReport> rapports = service.getAllRapports();
@@ -36,80 +34,53 @@ public class DriverMonthlyReportController {
         return new ResponseEntity<>(rapportDTOs, HttpStatus.OK);
     }
 
-    /**
-     * Get a monthly rapport by driverId.
-     * @param driverId Driver's unique ID.
-     * @return DriverMonthlyRapportDTO
-     */
+    // Get a monthly rapport by driverId
     @GetMapping("/{driverId}")
     public ResponseEntity<DriverMonthlyReportDTO> getRapportById(@PathVariable Long driverId) {
         Optional<DriverMonthlyReport> rapport = service.getRapportById(driverId);
-        if (rapport.isPresent()) {
-            return new ResponseEntity<>(convertToDTO(rapport.get()), HttpStatus.OK);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return rapport.map(value -> new ResponseEntity<>(convertToDTO(value), HttpStatus.OK))
+                .orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
-    /**
-     * Create a new monthly rapport for a driver based on JSON input.
-     * @param request DriverMonthlyRapportDTO object containing the details.
-     * @return Created DriverMonthlyRapportDTO.
-     */
+    // Create a new monthly rapport
     @PostMapping
-    public ResponseEntity<DriverMonthlyReportDTO> createRapport(@RequestBody DriverMonthlyReportDTO request) {
+    public ResponseEntity<DriverMonthlyReport> createMonthlyReport(@RequestBody DriverMonthlyReport request) {
         try {
-            DriverMonthlyReport rapport = service.createRapport(
-                    request.getDriverId(),
-                    request.getPeriodFrom(),
-                    request.getPeriodTo()
-            );
-            return new ResponseEntity<>(convertToDTO(rapport), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST); // Invalid input
+            DriverMonthlyReport report = service.createRapport(request.getDriverId(), request.getPeriodFrom(), request.getPeriodTo());
+            return new ResponseEntity<>(report, HttpStatus.CREATED);
+        } catch (Exception e) {
+            // Log the exception details for debugging
+            e.printStackTrace();
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
-    /**
-     * Update an existing monthly rapport for a driver.
-     * @param driverId Driver's unique ID.
-     * @param periodFrom Start date of the period.
-     * @param periodTo End date of the period.
-     * @return Updated DriverMonthlyRapportDTO.
-     */
+    // Update a monthly rapport
     @PutMapping("/{driverId}")
     public ResponseEntity<DriverMonthlyReportDTO> updateRapport(
             @PathVariable Long driverId,
             @RequestParam LocalDate periodFrom,
             @RequestParam LocalDate periodTo) {
-
         try {
             DriverMonthlyReport updatedRapport = service.updateRapport(driverId, periodFrom, periodTo);
             return new ResponseEntity<>(convertToDTO(updatedRapport), HttpStatus.OK);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // If the rapport is not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    /**
-     * Delete a monthly rapport for a driver.
-     * @param driverId Driver's unique ID.
-     * @return Status message.
-     */
+    // Delete a monthly rapport
     @DeleteMapping("/{driverId}")
     public ResponseEntity<Void> deleteRapport(@PathVariable Long driverId) {
         try {
             service.deleteRapport(driverId);
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT); // Successfully deleted
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } catch (RuntimeException e) {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND); // If the rapport is not found
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
-    /**
-     * Converts DriverMonthlyRapport to DriverMonthlyRapportDTO.
-     * @param rapport DriverMonthlyRapport object.
-     * @return DriverMonthlyRapportDTO
-     */
+    // Convert entity to DTO
     private DriverMonthlyReportDTO convertToDTO(DriverMonthlyReport rapport) {
         return DriverMonthlyReportDTO.builder()
                 .driverId(rapport.getDriverId())

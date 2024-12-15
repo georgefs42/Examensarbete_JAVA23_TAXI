@@ -8,7 +8,7 @@ import se.george.taxi.repositories.DriverIncomeRepository;
 import se.george.taxi.repositories.DriverMonthlyReportRepository;
 import se.george.taxi.repositories.DriverRepository;
 
-import java.math.BigDecimal;  // Add missing import for BigDecimal
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -17,67 +17,61 @@ import java.util.Optional;
 public class DriverMonthlyReportService {
 
     @Autowired
-    private DriverMonthlyReportRepository repository;
+    private DriverMonthlyReportRepository reportRepository;
 
     @Autowired
     private DriverRepository driverRepository;
 
     @Autowired
-    private DriverIncomeRepository driverIncomeRepository;
+    private DriverIncomeRepository incomeRepository;
 
     // Get all rapports
     public List<DriverMonthlyReport> getAllRapports() {
-        return repository.findAll();  // This will get all rapports from the database
+        return reportRepository.findAll();
     }
 
+    // Get a rapport by driverId
     public Optional<DriverMonthlyReport> getRapportById(Long driverId) {
-        return repository.findById(driverId);
+        return reportRepository.findById(driverId);
     }
 
+    // Create a new rapport
     public DriverMonthlyReport createRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
-        // Fetch driver details from the 'driver' table
         Driver driver = driverRepository.findById(driverId)
-                .orElseThrow(() -> new IllegalArgumentException("Driver not found for ID: " + driverId));
+                .orElseThrow(() -> new IllegalArgumentException("Driver not found"));
 
-        // Calculate total profit from the 'driver_income' table
-        Double totalProfit = driverIncomeRepository.calculateTotalProfit(driverId, periodFrom, periodTo);
-
-        // Convert totalProfit (Double) to BigDecimal before saving
+        Double totalProfit = incomeRepository.calculateTotalProfit(driverId, periodFrom, periodTo);
         BigDecimal totalProfitBigDecimal = BigDecimal.valueOf(totalProfit);
 
-        // Create a new DriverMonthlyRapport entity
-        DriverMonthlyReport rapport = new DriverMonthlyReport();
-        rapport.setDriverId(driverId);
-        rapport.setName(driver.getName());
-        rapport.setPersonalNumber(driver.getPersonalNumber());
-        rapport.setTotalProfit(totalProfitBigDecimal);  // Set BigDecimal value
-        rapport.setPeriodFrom(periodFrom);
-        rapport.setPeriodTo(periodTo);
+        DriverMonthlyReport rapport = new DriverMonthlyReport(
+                driverId,
+                driver.getName(),
+                driver.getPersonalNumber(),
+                totalProfitBigDecimal,
+                periodFrom,
+                periodTo
+        );
 
-        // Save and return the new rapport
-        return repository.save(rapport);
+        return reportRepository.save(rapport);
     }
 
+    // Update a rapport
     public DriverMonthlyReport updateRapport(Long driverId, LocalDate periodFrom, LocalDate periodTo) {
-        // Fetch the rapport and update it
-        Optional<DriverMonthlyReport> existingRapport = repository.findById(driverId);
-        if (existingRapport.isPresent()) {
-            DriverMonthlyReport rapport = existingRapport.get();
-            Double totalProfit = driverIncomeRepository.calculateTotalProfit(driverId, periodFrom, periodTo);
+        DriverMonthlyReport existingReport = reportRepository.findById(driverId)
+                .orElseThrow(() -> new RuntimeException("Report not found"));
 
-            // Convert totalProfit (Double) to BigDecimal before updating
-            BigDecimal totalProfitBigDecimal = BigDecimal.valueOf(totalProfit);
+        Double totalProfit = incomeRepository.calculateTotalProfit(driverId, periodFrom, periodTo);
+        BigDecimal totalProfitBigDecimal = BigDecimal.valueOf(totalProfit);
 
-            rapport.setTotalProfit(totalProfitBigDecimal);  // Set BigDecimal value
-            rapport.setPeriodFrom(periodFrom);
-            rapport.setPeriodTo(periodTo);
+        existingReport.setPeriodFrom(periodFrom);
+        existingReport.setPeriodTo(periodTo);
+        existingReport.setTotalProfit(totalProfitBigDecimal);
 
-            return repository.save(rapport);
-        }
-        throw new RuntimeException("Rapport not found for driverId: " + driverId);
+        return reportRepository.save(existingReport);
     }
 
+    // Delete a rapport
     public void deleteRapport(Long driverId) {
-        repository.deleteById(driverId);
+        reportRepository.deleteById(driverId);
     }
 }

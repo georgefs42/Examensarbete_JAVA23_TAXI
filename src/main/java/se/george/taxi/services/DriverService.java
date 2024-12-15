@@ -6,6 +6,7 @@ import se.george.taxi.models.Driver;
 import se.george.taxi.repositories.DriverRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class DriverService {
@@ -17,41 +18,47 @@ public class DriverService {
         this.driverRepository = driverRepository;
     }
 
-    // Save a new driver
-    public Driver saveDriver(Driver driver) {
-        return driverRepository.save(driver);
-    }
-
-    // Retrieve all drivers
+    // Method to get all drivers
     public List<Driver> getAllDrivers() {
         return driverRepository.findAll();
     }
 
-    // Retrieve a driver by ID
+    // Method to get a specific driver by ID
     public Driver getDriverById(Long driverId) {
-        return driverRepository.findById(driverId)
-                .orElseThrow(() -> new RuntimeException("Driver not found with ID: " + driverId));
+        Optional<Driver> driver = driverRepository.findById(driverId);
+        return driver.orElseThrow(() -> new RuntimeException("Driver not found with ID: " + driverId));
     }
 
-    // Update an existing driver
+    // Method to save a new driver
+    public Driver saveDriver(Driver driver) {
+        return driverRepository.save(driver);
+    }
+
+    // Method to update an existing driver
     public Driver updateDriver(Long driverId, Driver updatedDriver) {
-        Driver existingDriver = getDriverById(driverId);
+        Optional<Driver> existingDriverOpt = driverRepository.findById(driverId);
 
-        existingDriver.setName(updatedDriver.getName());
-        existingDriver.setPersonalNumber(updatedDriver.getPersonalNumber());
-        existingDriver.setAddress(updatedDriver.getAddress());
-        existingDriver.setMobile(updatedDriver.getMobile());
-        existingDriver.setEmail(updatedDriver.getEmail());
-        existingDriver.setPhoto(updatedDriver.getPhoto());
+        if (existingDriverOpt.isPresent()) {
+            Driver existingDriver = existingDriverOpt.get();
+            existingDriver.setName(updatedDriver.getName());
+            existingDriver.setPersonalNumber(updatedDriver.getPersonalNumber());
+            existingDriver.setAddress(updatedDriver.getAddress());
+            existingDriver.setMobile(updatedDriver.getMobile());
+            existingDriver.setEmail(updatedDriver.getEmail());
+            existingDriver.setPhotoUrl(updatedDriver.getPhotoUrl());  // Update photoUrl
 
-        return driverRepository.save(existingDriver);
-    }
-
-    // Delete a driver by ID
-    public void deleteDriver(Long driverId) {
-        if (!driverRepository.existsById(driverId)) {
+            return driverRepository.save(existingDriver);
+        } else {
             throw new RuntimeException("Driver not found with ID: " + driverId);
         }
-        driverRepository.deleteById(driverId);
+    }
+
+    // Method to delete a driver
+    public void deleteDriver(Long driverId) {
+        if (driverRepository.existsById(driverId)) {
+            driverRepository.deleteById(driverId);
+        } else {
+            throw new RuntimeException("Driver not found with ID: " + driverId);
+        }
     }
 }

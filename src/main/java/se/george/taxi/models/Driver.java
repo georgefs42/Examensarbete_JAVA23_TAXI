@@ -14,11 +14,8 @@ public class Driver {
     private String mobile;
     private String email;
 
-    @Lob
-    private byte[] photo;
-
-    // Default constructor for JPA
-    public Driver() {}
+    // Store the photo URL instead of the photo itself
+    private String photoUrl;  // Photo URL
 
     // Getters and Setters
     public Long getDriverId() {
@@ -69,11 +66,11 @@ public class Driver {
         this.email = email;
     }
 
-    public byte[] getPhoto() {
-        return photo;
+    public String getPhotoUrl() {
+        return photoUrl;
     }
 
-    public void setPhoto(byte[] photo) {
-        this.photo = photo;
+    public void setPhotoUrl(String photoUrl) {
+        this.photoUrl = photoUrl;
     }
 }

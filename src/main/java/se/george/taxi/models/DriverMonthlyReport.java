@@ -1,6 +1,8 @@
 package se.george.taxi.models;
 
 import jakarta.persistence.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 

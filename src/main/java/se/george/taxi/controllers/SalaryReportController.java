@@ -12,6 +12,8 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/salary-report")
+@CrossOrigin(origins = "http://localhost:5173")
+
 public class SalaryReportController {
 
     @Autowired
