@@ -1,12 +1,15 @@
 package se.george.taxi.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
 
 import java.time.LocalDate;
 
+@Getter
 @Entity
 public class DriverIncome {
 
+    // Getters and Setters
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -33,33 +36,16 @@ public class DriverIncome {
         this.driver = driver;
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
-
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public LocalDate getDate() {
-        return date;
     }
 
     public void setDate(LocalDate date) {
         this.date = date;
     }
 
-    public double getDailyIncome() {
-        return dailyIncome;
-    }
-
     public void setDailyIncome(double dailyIncome) {
         this.dailyIncome = dailyIncome;
-    }
-
-    public double getDailyIncomeAfterVAT() {
-        return dailyIncomeAfterVAT;
     }
 
     public void setDailyIncomeAfterVAT(double dailyIncomeAfterVAT) {
@@ -68,16 +54,8 @@ public class DriverIncome {
         calculateDriverDailyProfit();
     }
 
-    public double getDriverDailyProfit() {
-        return driverDailyProfit;
-    }
-
     public void setDriverDailyProfit(double driverDailyProfit) {
         this.driverDailyProfit = driverDailyProfit;
-    }
-
-    public Driver getDriver() {
-        return driver;
     }
 
     public void setDriver(Driver driver) {

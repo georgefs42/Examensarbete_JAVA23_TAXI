@@ -1,15 +1,20 @@
 package se.george.taxi.models;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "driver_monthly_rapport")
 public class DriverMonthlyReport {
 
+    // Getters and Setters
     @Id
     @Column(name = "driver_id", nullable = false)
     private Long driverId; // Primary Key (also a Foreign Key)
@@ -39,55 +44,6 @@ public class DriverMonthlyReport {
         this.personalNumber = personalNumber;
         this.totalProfit = totalProfit;
         this.periodFrom = periodFrom;
-        this.periodTo = periodTo;
-    }
-
-    // Getters and Setters
-    public Long getDriverId() {
-        return driverId;
-    }
-
-    public void setDriverId(Long driverId) {
-        this.driverId = driverId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getPersonalNumber() {
-        return personalNumber;
-    }
-
-    public void setPersonalNumber(String personalNumber) {
-        this.personalNumber = personalNumber;
-    }
-
-    public BigDecimal getTotalProfit() {
-        return totalProfit;
-    }
-
-    public void setTotalProfit(BigDecimal totalProfit) {
-        this.totalProfit = totalProfit;
-    }
-
-    public LocalDate getPeriodFrom() {
-        return periodFrom;
-    }
-
-    public void setPeriodFrom(LocalDate periodFrom) {
-        this.periodFrom = periodFrom;
-    }
-
-    public LocalDate getPeriodTo() {
-        return periodTo;
-    }
-
-    public void setPeriodTo(LocalDate periodTo) {
         this.periodTo = periodTo;
     }
 
