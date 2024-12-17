@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import lombok.Getter;
 import lombok.Setter;
+import java.time.LocalDate;
+import java.time.LocalTime;
 
 @Getter
 @Setter
@@ -26,12 +28,16 @@ public class Booking {
     private double duration;
     private double price;
 
+    private LocalDate date; // New field for date
+    private LocalTime time; // New field for time
+
     // Default constructor
     public Booking() {}
 
     // Constructor with fields
     public Booking(String name, String mobile, String email, String pickupAddress, String extraAddress,
-                   String dropOffAddress, double distance, double duration, double price) {
+                   String dropOffAddress, double distance, double duration, double price,
+                   LocalDate date, LocalTime time) {
         this.name = name;
         this.mobile = mobile;
         this.email = email;
@@ -41,5 +47,7 @@ public class Booking {
         this.distance = distance;
         this.duration = duration;
         this.price = price;
+        this.date = date;
+        this.time = time;
     }
 }

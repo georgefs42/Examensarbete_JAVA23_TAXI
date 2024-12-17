@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -17,7 +19,7 @@ import java.util.Map;
 public class BookingController {
 
     @Autowired
-    private BookingRepository bookingRepository;  // Inject the BookingRepository
+    private BookingRepository bookingRepository;
 
     // Create a new booking
     @PostMapping
@@ -26,8 +28,9 @@ public class BookingController {
             // Save the booking in the database
             Booking savedBooking = bookingRepository.save(booking);
 
-            // Create a response map to return the complete booking details
+            // Create a response map to return the complete booking details, including date and time
             Map<String, Object> response = new HashMap<>();
+            response.put("id", savedBooking.getId());
             response.put("name", savedBooking.getName());
             response.put("mobile", savedBooking.getMobile());
             response.put("email", savedBooking.getEmail());
@@ -37,12 +40,12 @@ public class BookingController {
             response.put("distance", savedBooking.getDistance());
             response.put("duration", savedBooking.getDuration());
             response.put("price", savedBooking.getPrice());
+            response.put("date", savedBooking.getDate()); // Include date in the response
+            response.put("time", savedBooking.getTime()); // Include time in the response
             response.put("message", "Booking received successfully!");
 
-            // Return the response with status 201 (Created)
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
-            // In case of an error, return a bad request response
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error creating booking: " + e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
@@ -53,14 +56,12 @@ public class BookingController {
     @GetMapping
     public ResponseEntity<?> getAllBookings() {
         try {
-            List<Booking> bookings = bookingRepository.findAll();  // Fetch all bookings from the database
+            List<Booking> bookings = bookingRepository.findAll();
             if (bookings.isEmpty()) {
-                // If no bookings are found, return a 204 No Content response
                 return new ResponseEntity<>("No bookings found", HttpStatus.NO_CONTENT);
             }
-            return new ResponseEntity<>(bookings, HttpStatus.OK);  // Return 200 OK with the list of bookings
+            return new ResponseEntity<>(bookings, HttpStatus.OK);
         } catch (Exception e) {
-            // Return a generic error response with status 500
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Error fetching bookings: " + e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -72,11 +73,10 @@ public class BookingController {
     public ResponseEntity<?> getBookingById(@PathVariable Long id) {
         try {
             Booking booking = bookingRepository.findById(id)
-                    .orElseThrow(() -> new RuntimeException("Booking not found")); // Fetch booking by ID
+                    .orElseThrow(() -> new RuntimeException("Booking not found"));
 
-            return new ResponseEntity<>(booking, HttpStatus.OK);  // Return the booking with status 200
+            return new ResponseEntity<>(booking, HttpStatus.OK);
         } catch (RuntimeException e) {
-            // Return an error message if the booking is not found
             Map<String, Object> errorResponse = new HashMap<>();
             errorResponse.put("error", "Booking not found: " + e.getMessage());
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
@@ -92,8 +92,8 @@ public class BookingController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
-        booking.setId(id);  // Make sure the ID is set before saving
-        Booking updatedBooking = bookingRepository.save(booking); // Save the updated booking
+        booking.setId(id); // Make sure the ID is set before saving
+        Booking updatedBooking = bookingRepository.save(booking);
 
         Map<String, Object> response = new HashMap<>();
         response.put("id", updatedBooking.getId());
@@ -111,7 +111,7 @@ public class BookingController {
             return new ResponseEntity<>(errorResponse, HttpStatus.NOT_FOUND);
         }
 
-        bookingRepository.deleteById(id);  // Delete the booking by ID
+        bookingRepository.deleteById(id); // Delete the booking by ID
 
         Map<String, Object> response = new HashMap<>();
         response.put("message", "Booking deleted successfully! ID: " + id);
