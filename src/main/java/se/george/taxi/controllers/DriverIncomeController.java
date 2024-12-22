@@ -8,7 +8,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/driver-income")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://taxi.georgedev.se")
 public class DriverIncomeController {
 
     private final DriverIncomeService driverIncomeService;

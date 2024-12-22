@@ -12,7 +12,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/salary-report")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://taxi.georgedev.se")
 
 public class SalaryReportController {
 

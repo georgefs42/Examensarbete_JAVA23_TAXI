@@ -6,14 +6,15 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
-public class CorsConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
+        // Allow CORS for your frontend origin
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:5173")  // Frontend origin
-                .allowedMethods("GET", "POST", "PUT", "DELETE")  // Allowed HTTP methods
-                .allowedHeaders("*")  // Allow all headers
-                .allowCredentials(true);  // Allow credentials
+                .allowedOrigins("https://taxi.georgedev.se/") // Your React frontend URL
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                .allowedHeaders("*")
+                .allowCredentials(true);
     }
 }

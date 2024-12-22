@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/monthly-rapport")
-@CrossOrigin(origins = "http://localhost:5173")
+@CrossOrigin(origins = "https://taxi.georgedev.se")
 public class DriverMonthlyReportController {
 
     @Autowired
