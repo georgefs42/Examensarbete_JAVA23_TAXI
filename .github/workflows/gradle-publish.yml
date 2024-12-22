@@ -3,38 +3,27 @@ name: Build and Deploy Java Spring Boot Application
 on:
   push:
     branches:
-      - main  # This will trigger the workflow whenever you push to the 'main' branch
+      - main  # Trigger the workflow on push to 'main' branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest  # Ubuntu 22.04 (or soon Ubuntu 24.04) is the default for GitHub Actions runners
+    runs-on: ubuntu-latest  # Ubuntu 22.04 (or 24.04 soon)
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v3  # Checks out the repository so that we can work with it
+      uses: actions/checkout@v3  # Ensure code is checked out before build
 
     - name: Set up JDK
-      uses: actions/setup-java@v3  # This action sets up the Java environment
+      uses: actions/setup-java@v3  # Set up the Java environment
       with:
-        java-version: '17'  # Set Java version (modify if you need a different version)
-        distribution: 'temurin'  # Use Temurin JDK distribution
+        java-version: '17'  # Ensure you’re using the correct Java version for your project
+        distribution: 'temurin'  # Temurin is the OpenJDK distribution
 
-    - name: Build with Maven
-      run: mvn clean package --file ./pom.xml  # Build the project using Maven and the 'pom.xml' file
+    - name: Set working directory to project folder
+      run: cd Examensarbete_JAVA23_TAXI  # Adjust the path if your project folder name differs
+
+    - name: Build with Maven (with debug mode)
+      run: mvn clean package -X --file Examensarbete_JAVA23_TAXI/pom.xml  # Include the '-X' flag for detailed debug output
 
     - name: Run Application
-      run: java -jar target/*.jar  # Run the built Spring Boot application from the 'target' folder
-
-    # Optional Deployment (Example: Deploy to Render or Heroku)
-    - name: Deploy Application (Render)
-      run: |
-        curl -X POST https://api.render.com/deploy/srv-xxxxxxxx?key=YOUR_API_KEY  # Render deployment (adjust for actual API key)
-        
-    # Alternatively, if you deploy to Heroku
-    - name: Deploy Application (Heroku)
-      env:
-        HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}  # Store your Heroku API key in GitHub Secrets
-      run: |
-        git remote add heroku https://git.heroku.com/your-app.git
-        git push heroku main  # Deploy to Heroku
-
+      run: java -jar Examensarbete_JAVA23_TAXI/target/*.jar  # Ensure the path matches your project output directory
