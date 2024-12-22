@@ -16,11 +16,14 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'temurin'
+        java-version: '17'  # You can change to another version if necessary
+        distribution: 'temurin'  # Temurin is a popular OpenJDK distribution
+
+    - name: Set working directory to the project folder
+      run: cd Examensarbete_JAVA23_TAXI  # Adjust this if your project folder name is different
 
     - name: Build with Maven
-      run: mvn clean package
+      run: mvn clean package --file Examensarbete_JAVA23_TAXI/pom.xml  # Make sure the path to pom.xml is correct
 
     - name: Run Application
-      run: java -jar target/*.jar
+      run: java -jar Examensarbete_JAVA23_TAXI/target/*.jar  # Adjust if your project folder is different
