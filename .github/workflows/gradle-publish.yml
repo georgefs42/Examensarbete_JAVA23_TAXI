@@ -19,11 +19,11 @@ jobs:
         java-version: '17'  # Ensure you’re using the correct Java version for your project
         distribution: 'temurin'  # Temurin is the OpenJDK distribution
 
-    - name: Set working directory to project folder
-      run: cd Examensarbete_JAVA23_TAXI  # Adjust the path if your project folder name differs
-
+    # If your project is in the root directory, no need to cd
     - name: Build with Maven (with debug mode)
-      run: mvn clean package -X --file Examensarbete_JAVA23_TAXI/pom.xml  # Include the '-X' flag for detailed debug output
+      run: mvn clean package -X  # Run Maven from the root directory, no need for `cd`
 
+    # If your .jar file is in the target folder, use the following command to run it:
     - name: Run Application
-      run: java -jar Examensarbete_JAVA23_TAXI/target/*.jar  # Ensure the path matches your project output directory
+      run: java -jar target/*.jar  # Run the application from the 'target' folder
+
